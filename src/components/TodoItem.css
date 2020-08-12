@@ -1,0 +1,35 @@
+.TodoItem {
+    padding: 10px 30px;
+    display: flex;
+    border-bottom: 1px solid #AAA;
+    font-weight: 300;
+}
+
+.TodoItem:last-child {
+    border: none;
+}
+
+.uncheck {
+    min-width: 27px;
+    max-height: 27px;
+    border-radius: 50%;
+    border: .5px solid black;
+    margin-left: 2px;
+}
+
+.TodoItem p {
+    margin-left: 20px;
+    transition: all .3s ease-in;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.TodoItem p:hover {
+    overflow: visible;
+}
+
+p.complete {
+    text-decoration: line-through;
+    opacity: .3;
+    font-style: italic;
+}
