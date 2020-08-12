@@ -2,15 +2,13 @@ import React,{Component} from 'react';
 import './App.css';
 import classNames from 'classnames';
 import TodoItem from './components/TodoItem';
-import downArrow from './images/down-arrow.svg';
-import upArrow from './images/up-arrow.svg';
 const localStorageKey = 'todoKey';
 let localTodoList = JSON.parse(localStorage.getItem(localStorageKey));
 if(!localTodoList) localTodoList = [];
 class App extends Component {
   constructor(props){
     super(props);
-    
+    this.checkAll = true;
     this.state = {
       filter: 'all',
       todoList:[
@@ -22,11 +20,11 @@ class App extends Component {
     this.onClickItem = this.onClickItem.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.checkAllClick = this.checkAllClick.bind(this);
-    this.uncheckAllClick = this.uncheckAllClick.bind(this);
     this.onFilterAllClick = this.onFilterAllClick.bind(this);
     this.onFilterCompleteClick = this.onFilterCompleteClick.bind(this);
     this.onFilterUncompleteClick = this.onFilterUncompleteClick.bind(this);
     this.onClearCompleteClick = this.onClearCompleteClick.bind(this);
+    this.onDeleteItemClick = this.onDeleteItemClick.bind(this);
   }
   onClickItem(item){
     return ()=>{
@@ -68,27 +66,17 @@ class App extends Component {
       currentInput: event.target.value
     })
   }
-  checkAllClick(){
+  checkAllClick(){ 
     let shallowTodo = [...this.state.todoList];
     shallowTodo.forEach(el=>{
-      el.isComplete = true;
+      el.isComplete = this.checkAll;
     })
     this.setState({
       todoList:[
         ...shallowTodo
       ]
     })
-  }
-  uncheckAllClick(){
-    let shallowTodo = [...this.state.todoList];
-    shallowTodo.forEach(el=>{
-      el.isComplete = false;
-    })
-    this.setState({
-      todoList:[
-        ...shallowTodo
-      ]
-    })
+    this.checkAll = !this.checkAll;
   }
   onFilterAllClick(){
     this.setState({
@@ -115,6 +103,18 @@ class App extends Component {
       }
     )
   }
+  onDeleteItemClick(item){
+    return ()=>{
+      let index = this.state.todoList.indexOf(item);
+      this.setState((oldState)=>{
+      return{
+        todoList: this.state.todoList.filter((it,i)=>{
+           return i !== index;
+        })
+      }
+      })
+    }
+  }
   render(){
     localStorage.setItem(localStorageKey,JSON.stringify([...this.state.todoList]));
     const {todoList,currentInput,filter} = this.state;
@@ -129,11 +129,11 @@ class App extends Component {
         <div className = "wrapper">
         <div className = "input">
             <div className = "check-control">
-              <img src={upArrow} alt="up-arrow" width={32} height = {32} onClick = {this.uncheckAllClick}/>
-              <img src={downArrow} alt="down-arrow" width={32} height = {32} onClick = {this.checkAllClick}/>
+               <span onClick = {this.checkAllClick} role="img" aria-labelledby="circle">🔰</span>
             </div>
             <input id="inputTodo" type="text"
-             value = {currentInput}
+              value = {currentInput}
+              autoFocus
               placeholder="Type your todo" 
               onChange={this.onChange}
               onKeyUp={this.onKeyUp} />
@@ -144,11 +144,12 @@ class App extends Component {
                key={index} 
                item = {item} 
                onClickItem={this.onClickItem(item)}
+               onDeleteItemClick = {this.onDeleteItemClick(item)}
                  />
           })
         }
         <div className = "footer">
-          <span>{countUncomplete} items left</span>
+          <span>{countUncomplete===1?"1 item left":countUncomplete+" items left"}</span>
           <div className = "filter">
             <button className={classNames({active: filter === 'all'})}
              onClick={this.onFilterAllClick}>All</button>

@@ -1,8 +1,27 @@
 .TodoItem {
     padding: 10px 30px;
     display: flex;
+    align-items: center;
     border-bottom: 1px solid #AAA;
     font-weight: 300;
+}
+
+* {
+    user-select: none;
+}
+
+.TodoItem:hover>.delete {
+    display: inline;
+}
+
+.TodoItem>.delete {
+    color: black;
+    font-weight: 100;
+    opacity: 1;
+    font-size: .7rem;
+    line-height: 100%;
+    display: none;
+    cursor: pointer;
 }
 
 .TodoItem:last-child {
@@ -10,17 +29,25 @@
 }
 
 .uncheck {
-    min-width: 27px;
-    max-height: 27px;
+    text-align: center;
+    color: green;
+    line-height: 27px;
+    font-size: .7rem;
+    font-weight: 600;
+    width: 27px;
+    height: 27px;
     border-radius: 50%;
     border: .5px solid black;
     margin-left: 2px;
+    cursor: pointer;
 }
 
 .TodoItem p {
+    user-select: text;
     margin-left: 20px;
     transition: all .3s ease-in;
     overflow: hidden;
+    flex-grow: 1;
     text-overflow: ellipsis;
 }
 

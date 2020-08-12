@@ -1,21 +1,16 @@
 import React,{Component} from 'react';
-import checkMark from '../images/check.svg';
 import './TodoItem.css'
 import classNames from 'classnames'
 class TodoItem extends Component{
     render(){
-        const {item,onClickItem} = this.props;
+        const {item,onClickItem,onDeleteItemClick} = this.props;
         return (
             <div className = "TodoItem">
-                {item.isComplete && <img src = {checkMark}
-                width = {32} height = {32} 
-                alt="check-mark" 
-                onClick = {onClickItem} />}
-                {!item.isComplete && 
-                <div className = "uncheck"
-                 onClick = {onClickItem}>
-                </div>}
+                <div className = "uncheck" 
+                 onClick = {onClickItem}> {item.isComplete?"✔":""}
+                </div>
                 <p className = {classNames({complete:item.isComplete})}>{item.content}</p>
+                <span className = "delete" role="img" aria-labelledby="delete" onClick={onDeleteItemClick}>❌</span>
             </div>
         )
     }
