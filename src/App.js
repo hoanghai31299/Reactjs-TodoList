@@ -54,7 +54,7 @@ class App extends Component {
           this.setState({
             currentInput: '',
             todoList:[
-            {content:text,isComplete:false},
+            {content:text,isComplete:false,isEditing:false},
             ...this.state.todoList
             ]
           });
@@ -115,6 +115,66 @@ class App extends Component {
       })
     }
   }
+  onEditItemClick = item=>{
+    return ()=>{
+      const {todoList} = this.state;
+      const index = todoList.indexOf(item);
+      this.setState(()=>{
+          return {
+            todoList: [
+              ...todoList.slice(0,index),
+              {...todoList[index],isEditing:true},
+              ...todoList.slice(index+1)
+            ]
+          }
+      })
+    }
+  }
+  onNotEdit = item =>{
+    const {todoList} = this.state;
+    return ()=>{
+      if(item.content === ""){
+        this.setState (oldState=>{
+          return{
+            ...oldState,
+            todoList: [
+              ...todoList.filter(i => i !== item)
+            ]
+          }
+        })
+        return;
+      }
+      const index = todoList.indexOf(item);
+      this.setState((oldState)=>{
+        return {
+          ...oldState,
+          todoList:[
+            ...todoList.slice(0,index),
+            {...todoList[index],isEditing:false},
+            ...todoList.slice(index+1)
+          ]
+        }
+    })
+    }
+  }
+  onEditChange = item =>{
+    return e =>{
+      let value = e.target.value;
+      const {todoList} = this.state;
+      
+      const index = todoList.indexOf(item);
+      this.setState((oldState)=>{
+        return {
+          ...oldState,
+          todoList:[
+            ...todoList.slice(0,index),
+            {...todoList[index],content:value},
+            ...todoList.slice(index+1)
+          ]
+        }
+      })
+    }
+  }
   render(){
     localStorage.setItem(localStorageKey,JSON.stringify([...this.state.todoList]));
     const {todoList,currentInput,filter} = this.state;
@@ -138,6 +198,7 @@ class App extends Component {
               onChange={this.onChange}
               onKeyUp={this.onKeyUp} />
         </div>
+        <div className = "list-todo">
         {
           listFelted.map((item,index)=>{
               return <TodoItem className = "todo"
@@ -145,9 +206,14 @@ class App extends Component {
                item = {item} 
                onClickItem={this.onClickItem(item)}
                onDeleteItemClick = {this.onDeleteItemClick(item)}
-                 />
+               onEditItemClick = {this.onEditItemClick(item)}
+               onNotEdit = {this.onNotEdit(item)}
+               onEditChange = {this.onEditChange(item)}
+               />
           })
         }
+        </div>
+        {todoList.length!==0&&
         <div className = "footer">
           <span>{countUncomplete===1?"1 item left":countUncomplete+" items left"}</span>
           <div className = "filter">
@@ -160,8 +226,9 @@ class App extends Component {
         </div>
         <button className = {classNames("clear-complete",{active:countComplete})}
         onClick = {this.onClearCompleteClick}>Clear Completed</button>
+      </div>}
       </div>
-      </div>
+      
     </div>
   );
   }

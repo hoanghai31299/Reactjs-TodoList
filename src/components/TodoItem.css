@@ -48,6 +48,7 @@
     transition: all .3s ease-in;
     overflow: hidden;
     flex-grow: 1;
+    padding: 10px;
     text-overflow: ellipsis;
 }
 
@@ -59,4 +60,21 @@ p.complete {
     text-decoration: line-through;
     opacity: .3;
     font-style: italic;
+}
+
+.input-edit {
+    outline: none;
+    border: none;
+    box-shadow: inset 1px 1px 4px rgba(0, 0, 0, .2);
+    background-color: transparent;
+    margin-left: 20px;
+    transition: all .3s ease-in;
+    overflow: hidden;
+    flex-grow: 1;
+    padding: 10px;
+    text-overflow: ellipsis;
+}
+
+.TodoItem .input-edit+.delete {
+    display: none;
 }
